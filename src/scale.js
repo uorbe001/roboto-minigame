@@ -1,4 +1,4 @@
 module.exports = {
-	'toScreen': 30,
-	'toWorld': 1/30
+	'toScreen': 10,
+	'toWorld': 1/10
 };

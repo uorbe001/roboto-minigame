@@ -12,8 +12,6 @@ var Entity = function (x, y) {
 	this.drawPosition = new Vector2d(x * Scale.toScreen, y * Scale.toScreen);
 };
 
-Entity.prototype.draw = function(renderer) {
-	// body...
-};
+Entity.prototype.draw = function(renderer) {};
 
 module.exports = Entity;

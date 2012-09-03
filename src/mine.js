@@ -1,26 +1,25 @@
 var Entity = require('./entity'), extend = require('./utils').extend, b2d = require('box2dnode'), Scale = require("./scale");
 
 /**
- The player entity.
+ The Mine entity.
  @param world box2d world
  @param x
  @param y
 */
-var Player = function(world, x, y) {
-	Player.__super__.constructor.call(this, world, x, y);
+var Mine = function(world, x, y) {
+	Mine.__super__.constructor.call(this, world, x, y);
 	this.radious = 5;
-	this.callbacks = [];
 	this.__initPhysics(world, x, y);
 };
 
-//"Inheritance", player inherits from entity
-extend(Player, Entity);
+//"Inheritance", Mine inherits from entity
+extend(Mine, Entity);
 
 /**
-  Inits the player's physics.
+  Inits the Mine's physics.
   @param world Physics world.
 */
-Player.prototype.__initPhysics = function(world, x, y) {
+Mine.prototype.__initPhysics = function(world, x, y) {
 	var fixtureDef = new b2d.b2FixtureDef();
 	fixtureDef.density = 1.0;
 	fixtureDef.friction = 0.5;
@@ -37,35 +36,35 @@ Player.prototype.__initPhysics = function(world, x, y) {
 	this.fixture = this.body.CreateFixture(fixtureDef);
 };
 
-Player.prototype.getPosition = function() {
+Mine.prototype.getPosition = function() {
 	return this.body.GetPosition();
 };
 
 /**
- Draws the player.
+ Draws the Mine.
  @param renderer The renderer to use.
 */
-Player.prototype.draw = function(renderer) {
+Mine.prototype.draw = function(renderer) {
 	var p = this.getPosition();
 	this.drawPosition.set(p.y * Scale.toScreen, p.y * Scale.toScreen);
 	renderer.drawCircle(this.drawPosition, this.radious);
 };
 
 /**
- Sets an event listener.
- @param event_id The id of the event.
- @param callbacl The callback to be called when the event is fired.
+ Draws all the given instances of mines.
+ @param rednerer The renderer to use.
+ @param mines Array holding the different instances.
 */
-Player.prototype.on = function(event_id, callback) {
-	this.callbacks[event_id] = callback;
+Mine.drawInstances = function(renderer, mines) {
+	var mine, p;
+	//This method is faster than calling once per mine, function calls are pretty expensive on js.
+	for (var i = mines.length - 1; i >= 0; i--) {
+		mine = mines[i];
+		console.log(mine)
+		p = mine.getPosition();
+		mine.drawPosition.set(p.y * Scale.toScreen, p.y * Scale.toScreen);
+		renderer.drawCircle(mine.drawPosition, mine.radious);
+	}
 };
 
-/**
- Fires an event
- @param event_id The id of the event.
-*/
-Player.prototype.fire = function(event_id) {
-	this.callbacks[event_id](this);
-};
-
-module.exports = Player;
+module.exports = Mine;
