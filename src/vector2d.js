@@ -10,4 +10,9 @@ var Vector2d = function(x, y) {
 	this.y = y || 0;
 };
 
+Vector2d.prototype.set = function(x, y) {
+	this.x = x;
+	this.y = y;
+};
+
 module.exports = Vector2d;

@@ -19,46 +19,42 @@ var Renderer = function(canvas, clear_color, fill_color, stroke_color, line_widt
 
 /**
  Binds the draw properties, color, line width etc.
- @param context The context to render on.
 */
-Renderer.prototype.__bindProperties = function(context) {
-	context.fillStyle = this.fillColor;
-	context.lineWidth = this.lineWidth;
-	context.strokeStyle = this.strokeColor;
+Renderer.prototype.__bindProperties = function() {
+	this.context.fillStyle = this.fillColor;
+	this.context.lineWidth = this.lineWidth;
+	this.context.strokeStyle = this.strokeColor;
 };
 
 /**
  Fills the background with the set color.
- @param context The context to render on.
 */
-Renderer.prototype.clear = function(context) {
-	context.fillStyle = this.clearColor;
-	context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+Renderer.prototype.clear = function() {
+	this.context.fillStyle = this.clearColor;
+	this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 };
 
 /**
  Draws a circle centered in the given position with the given radious.
- @param context The context to render on.
  @param position The center of the circle.
  @param radious The radious of the circle.
 */
-Renderer.prototype.drawCircle = function(context, position, radious) {
-	this.__bindProperties(context);
-	context.beginPath();
-	context.arc(position.x, position.y, radious, 0, 2 * Math.PI, false);
-	context.fill();
-	context.stroke();
+Renderer.prototype.drawCircle = function(position, radious) {
+	this.__bindProperties();
+	this.context.beginPath();
+	this.context.arc(position.x, position.y, radious, 0, 2 * Math.PI, false);
+	this.context.fill();
+	this.context.stroke();
 };
 
 /**
  Draws a square centered in the given position with the given size.
- @param context The context to render on.
  @param position The center of the square.
  @param width The square's width.
  @param height The square's height.
 */
-Renderer.prototype.drawSquare = function(context, position, width, height) {
-	this.__bindProperties(context);
+Renderer.prototype.drawSquare = function( position, width, height) {
+	this.__bindProperties();
 	//TODO
 };
 

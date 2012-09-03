@@ -1,12 +1,13 @@
-var Renderer = require("./renderer"), Vector2d = require('./vector2d');
+var Renderer = require("./renderer"), Player = require("./player"), b2d = require("box2dnode");
 
 var Game = (function() {
-	var window = this, doc = window.document, canvas, context, renderer;
+	var window = this, doc = window.document, canvas, context, renderer, player, physics_world;
 
 	function init() {
 		canvas = doc.getElementById('cnv');
 		renderer = new Renderer(canvas);
-		context = renderer.context;
+
+		initWorld();
 
 		window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
 			window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -14,10 +15,23 @@ var Game = (function() {
 		requestAnimationFrame(update);
 	}
 
+	function initWorld() {
+		physics_world = new b2d.b2World(new b2d.b2Vec2(0, 0), true);
+		player = new Player(physics_world, 10, 10);
+	}
+
+	function updatePhysics() {
+		physics_world.Step(1/60, 10, 10);
+		physics_world.ClearForces();
+	}
 
 	function update(timestamp) {
-		renderer.clear(context);
-		renderer.drawCircle(context, new Vector2d(canvas.width/2, canvas.height/2), 5);
+		requestAnimationFrame(update);
+		updatePhysics();
+
+
+		renderer.clear();
+		player.draw(renderer);
 	}
 
 	window.onload = init;
