@@ -1,5 +1,5 @@
 var Player = require("./player"), Mine = require("./mine"), Wall = require('./wall'),
-	b2d = require("box2dnode"), Scale = require('./scale');
+	b2d = require("box2dnode"), Scale = require('./scale'), Types = require('./types');
 
 /**
 	Level.
@@ -30,6 +30,8 @@ function Level(config) {
 	}
 
 	this.__setScreenBoundaries();
+
+	if (config && config.callbacks) this.__setContactListener(config.callbacks);
 }
 
 Level.prototype.__createBoundary = function(x, y, w, h) {
@@ -45,7 +47,9 @@ Level.prototype.__createBoundary = function(x, y, w, h) {
 	fixtureDef.shape = new b2d.b2PolygonShape();
 
 	fixtureDef.shape.SetAsBox(w, h);
-	this.physics_world.CreateBody(bodyDef).CreateFixture(fixtureDef);
+	var body = this.physics_world.CreateBody(bodyDef);
+	body.SetUserData(Types.Boundary * 100);
+	body.CreateFixture(fixtureDef);
 };
 
 Level.prototype.__setScreenBoundaries = function() {
@@ -61,6 +65,32 @@ Level.prototype.__setScreenBoundaries = function() {
 	//Left boundary
 	this.__createBoundary(this.canvasWidth * Scale.toWorld, this.canvasHeight / 2 * Scale.toWorld,
 		5 * Scale.toWorld, (this.canvasHeight * Scale.toWorld) / 2);
+};
+
+Level.prototype.__setContactListener = function(callbacks) {
+	var listener = new b2d.b2ContactListener();
+
+	if (callbacks.begin_contact) listener.BeginContact = function(contact) {
+		callbacks.begin_contact(contact.GetFixtureA().GetBody().GetUserData(),
+			contact.GetFixtureB().GetBody().GetUserData());
+	};
+
+	if (callbacks.end_contact) listener.EndContact = function(contact) {
+		callbacks.end_contact(contact.GetFixtureA().GetBody().GetUserData(),
+			contact.GetFixtureB().GetBody().GetUserData());
+	};
+
+	if (callbacks.pre_solve) listener.PreSolve = function(contact, impulse) {
+		callbacks.pre_solve(contact.GetFixtureA().GetBody().GetUserData(),
+				contact.GetFixtureB().GetBody().GetUserData(), impulse.normalImpulses[0]);
+	};
+
+	if (callbacks.post_solve) listener.PostSolve = function(contact, impulse) {
+		callbacks.post_solve(contact.GetFixtureA().GetBody().GetUserData(),
+				contact.GetFixtureB().GetBody().GetUserData(), impulse.normalImpulses[0]);
+	};
+
+	this.physics_world.SetContactListener(listener);
 };
 
 Level.prototype.updatePhysics = function() {
@@ -79,5 +109,9 @@ Level.prototype.draw = function(renderer) {
 	Mine.drawInstances(renderer, this.mines);
 	Wall.drawInstances(renderer, this.walls);
 };
+
+/*Level.prototype.removeEntity = function(id) {
+    this.physics_world.DestroyBody(body]);
+};*/
 
 module.exports = Level;

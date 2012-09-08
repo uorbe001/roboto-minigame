@@ -1,4 +1,4 @@
-var Entity = require('./entity'), extend = require('./utils').extend, b2d = require('box2dnode'), Scale = require("./scale");
+var Entity = require('./entity'), extend = require('./utils').extend, b2d = require('box2dnode'), Scale = require("./scale"), Types = require('./types');
 
 /**
  The Wall entity.
@@ -13,10 +13,12 @@ var Wall = function(world, x, y, w, h) {
 	this.width = w;
 	this.height = h;
 	this.__initPhysics(world, x, y, w, h);
+	Wall.count += 1;
 };
 
 //"Inheritance", Wall inherits from entity
 extend(Wall, Entity);
+Wall.count = 0;
 
 /**
   Inits the Wall's physics.
@@ -37,6 +39,7 @@ Wall.prototype.__initPhysics = function(world, x, y, w, h) {
 	bodyDef.position.y = y;
 
 	this.body = world.CreateBody(bodyDef);
+	this.body.SetUserData(Types.Wall * 100 + Wall.count);
 	this.fixture = this.body.CreateFixture(fixtureDef);
 };
 

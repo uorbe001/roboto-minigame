@@ -1,4 +1,4 @@
-var Entity = require('./entity'), extend = require('./utils').extend, b2d = require('box2dnode'), Scale = require("./scale");
+var Entity = require('./entity'), extend = require('./utils').extend, b2d = require('box2dnode'), Scale = require("./scale"), Types = require('./types');
 
 /**
  The player entity.
@@ -9,6 +9,7 @@ var Entity = require('./entity'), extend = require('./utils').extend, b2d = requ
 var Player = function(world, x, y) {
 	Player.__super__.constructor.call(this, world, x, y);
 	this.radious = 0.5;
+	this.stress = 0;
 	this.__initPhysics(world, x, y);
 };
 
@@ -33,6 +34,8 @@ Player.prototype.__initPhysics = function(world, x, y) {
 	bodyDef.position.y = y;
 
 	this.body = world.CreateBody(bodyDef);
+	//Set body id.
+	this.body.SetUserData(Types.Player * 100);
 	this.fixture = this.body.CreateFixture(fixtureDef);
 };
 
@@ -40,10 +43,10 @@ Player.prototype.getPosition = function() {
 	return this.body.GetPosition();
 };
 
-Player.prototype.move = function(x, y) {
+Player.prototype.setLinearVelocity = function(x, y) {
 	var v = this.body.GetLinearVelocity();
-	v.x += x;
-	v.y += y;
+	v.x = x;
+	v.y = y;
 
 	this.body.SetAwake(true);
 	this.body.SetLinearVelocity(v);
@@ -53,6 +56,10 @@ Player.prototype.stop = function() {
 	var v = this.body.GetLinearVelocity();
 	v.Set(0,0);
 	this.body.SetLinearVelocity(v);
+};
+
+Player.prototype.heardExplosion = function(distance) {
+	this.stress += 100 / distance;
 };
 
 /**

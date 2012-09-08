@@ -1,4 +1,4 @@
-var Renderer = require("./renderer"), Level = require('./level'), Scale = require('./scale');
+var Renderer = require("./renderer"), Level = require('./level'), Scale = require('./scale'), Types = require('./types');
 
 var Game = (function() {
 	var window = this, doc = window.document, canvas, context, renderer, level;
@@ -18,7 +18,29 @@ var Game = (function() {
 				{ 'position': {'x': 35, 'y': canvas.height/2 * Scale.toWorld}, 'width': 5, 'height': canvas.height/2 * Scale.toWorld }
 			],
 			'canvas_width': canvas.width,
-			'canvas_height': canvas.height
+			'canvas_height': canvas.height,
+			'callbacks': {
+				'begin_contact': function(a, b) {
+					var id;
+					//check the type of the first body
+					if (Math.floor(a / 100) == Types.Mine) {
+						id = a % 100;
+						console.log("explode! id:", id);
+
+						//if (Math.floor(b / 100) == Types.Player)
+						//	console.log("Hit! (superscared)");
+					}
+					//check the type of the second body
+					if (Math.floor(b / 100) == Types.Mine) {
+						id = a % 100;
+						console.log("explode! id:", id);
+
+						//if (Math.floor(a / 100) == Types.Player)
+						//	console.log("Hit! (superscared)");
+					}
+				}/*,
+				'end_contact': function(a, b) {}*/
+			}
 		});
 
 		initListeners();
@@ -33,18 +55,22 @@ var Game = (function() {
 		doc.addEventListener('keydown', function(e) {
 			switch(event.keyCode) {
 				case 37: //left
-					level.player.move(-5, 0);
+					level.player.setLinearVelocity(-20, 0);
 					break;
 				case 38: //up
-					level.player.move(0, -5);
+					level.player.setLinearVelocity(0, -20);
 					break;
 				case 39: //right
-					level.player.move(5, 0);
+					level.player.setLinearVelocity(20, 0);
 					break;
 				case 40: //down
-					level.player.move(0, 5);
+					level.player.setLinearVelocity(0, 20);
 					break;
 			}
+		});
+
+		doc.addEventListener('keyup', function(e) {
+			level.player.setLinearVelocity(0, 0);
 		});
 	}
 

@@ -1,4 +1,4 @@
-var Entity = require('./entity'), extend = require('./utils').extend, b2d = require('box2dnode'), Scale = require("./scale");
+var Entity = require('./entity'), extend = require('./utils').extend, b2d = require('box2dnode'), Scale = require("./scale"), Types = require('./types');
 
 /**
  The Mine entity.
@@ -11,10 +11,12 @@ var Mine = function(world, x, y) {
 	this.radious = 0.5;
 	this.__attractionForce = new b2d.b2Vec2();
 	this.__initPhysics(world, x, y);
+	Mine.count += 1;
 };
 
 //"Inheritance", Mine inherits from entity
 extend(Mine, Entity);
+Mine.count = 0;
 
 /**
   Inits the Mine's physics.
@@ -34,6 +36,7 @@ Mine.prototype.__initPhysics = function(world, x, y) {
 	bodyDef.position.y = y;
 
 	this.body = world.CreateBody(bodyDef);
+	this.body.SetUserData(Types.Mine * 100 + Mine.count);
 	this.fixture = this.body.CreateFixture(fixtureDef);
 };
 
@@ -80,7 +83,7 @@ Mine.prototype.think = function(player, walls) {
 			return;
 		}
 	}
-	console.log("visible")
+
 	//Player is visible
 	//Calculate the distance to the player
 	input.p2.Subtract(input.p1);
