@@ -41,11 +41,17 @@ Player.prototype.getPosition = function() {
 };
 
 Player.prototype.move = function(x, y) {
-	//Linear velocity doesnt do what I'd expect for some reason...
 	var v = this.body.GetLinearVelocity();
 	v.x += x;
 	v.y += y;
 
+	this.body.SetAwake(true);
+	this.body.SetLinearVelocity(v);
+};
+
+Player.prototype.stop = function() {
+	var v = this.body.GetLinearVelocity();
+	v.Set(0,0);
 	this.body.SetLinearVelocity(v);
 };
 

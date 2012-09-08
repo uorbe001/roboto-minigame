@@ -80,7 +80,7 @@ Mine.prototype.think = function(player, walls) {
 			return;
 		}
 	}
-
+	console.log("visible")
 	//Player is visible
 	//Calculate the distance to the player
 	input.p2.Subtract(input.p1);

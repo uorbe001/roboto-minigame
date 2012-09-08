@@ -30,8 +30,9 @@ Wall.prototype.__initPhysics = function(world, x, y, w, h) {
 
 	var bodyDef = new b2d.b2BodyDef();
 	bodyDef.type = b2d.b2Body.b2_staticBody;
-	fixtureDef.shape = new b2d.b2PolygonShape(this.radious);
-	fixtureDef.shape.SetAsBox(w, h);
+	fixtureDef.shape = new b2d.b2PolygonShape();
+
+	fixtureDef.shape.SetAsBox(w/2, h/2);
 	bodyDef.position.x = x;
 	bodyDef.position.y = y;
 
