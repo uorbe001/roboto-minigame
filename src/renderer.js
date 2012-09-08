@@ -19,11 +19,12 @@ var Renderer = function(canvas, clear_color, fill_color, stroke_color, line_widt
 
 /**
  Binds the draw properties, color, line width etc.
+ @param opts Render options (overriding the defaults).
 */
-Renderer.prototype.__bindProperties = function() {
-	this.context.fillStyle = this.fillColor;
-	this.context.lineWidth = this.lineWidth;
-	this.context.strokeStyle = this.strokeColor;
+Renderer.prototype.__bindProperties = function(opts) {
+	this.context.fillStyle = opts && opts.fill_color || this.fillColor;
+	this.context.lineWidth = opts && opts.line_width || this.lineWidth;
+	this.context.strokeStyle = opts && opts.stroke_color || this.strokeColor;
 };
 
 /**
@@ -38,9 +39,10 @@ Renderer.prototype.clear = function() {
  Draws a circle centered in the given position with the given radious.
  @param position The center of the circle.
  @param radious The radious of the circle.
+ @param opts Render options (overriding the defaults).
 */
-Renderer.prototype.drawCircle = function(position, radious) {
-	this.__bindProperties();
+Renderer.prototype.drawCircle = function(position, radious, opts) {
+	this.__bindProperties(opts);
 	this.context.beginPath();
 	this.context.arc(position.x, position.y, radious, 0, 2 * Math.PI, false);
 	this.context.fill();
@@ -52,10 +54,11 @@ Renderer.prototype.drawCircle = function(position, radious) {
  @param position The center of the square.
  @param width The square's width.
  @param height The square's height.
+ @param opts Render options (overriding the defaults).
 */
-Renderer.prototype.drawSquare = function( position, width, height) {
-	this.__bindProperties();
-	//TODO
+Renderer.prototype.drawSquare = function( position, width, height, opts) {
+	this.__bindProperties(opts);
+	this.context.fillRect(position.x - width/2, position.y - height/2, width, height);
 };
 
 module.exports = Renderer;

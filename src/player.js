@@ -8,8 +8,7 @@ var Entity = require('./entity'), extend = require('./utils').extend, b2d = requ
 */
 var Player = function(world, x, y) {
 	Player.__super__.constructor.call(this, world, x, y);
-	this.radious = 5;
-	this.callbacks = [];
+	this.radious = 0.5;
 	this.__initPhysics(world, x, y);
 };
 
@@ -41,31 +40,23 @@ Player.prototype.getPosition = function() {
 	return this.body.GetPosition();
 };
 
+Player.prototype.move = function(x, y) {
+	//Linear velocity doesnt do what I'd expect for some reason...
+	var v = this.body.GetLinearVelocity();
+	v.x += x;
+	v.y += y;
+
+	this.body.SetLinearVelocity(v);
+};
+
 /**
  Draws the player.
  @param renderer The renderer to use.
 */
 Player.prototype.draw = function(renderer) {
 	var p = this.getPosition();
-	this.drawPosition.set(p.y * Scale.toScreen, p.y * Scale.toScreen);
-	renderer.drawCircle(this.drawPosition, this.radious);
-};
-
-/**
- Sets an event listener.
- @param event_id The id of the event.
- @param callbacl The callback to be called when the event is fired.
-*/
-Player.prototype.on = function(event_id, callback) {
-	this.callbacks[event_id] = callback;
-};
-
-/**
- Fires an event
- @param event_id The id of the event.
-*/
-Player.prototype.fire = function(event_id) {
-	this.callbacks[event_id](this);
+	this.drawPosition.set(p.x * Scale.toScreen, p.y * Scale.toScreen);
+	renderer.drawCircle(this.drawPosition, this.radious * Scale.toScreen);
 };
 
 module.exports = Player;

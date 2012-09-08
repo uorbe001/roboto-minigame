@@ -8,7 +8,8 @@ var Entity = require('./entity'), extend = require('./utils').extend, b2d = requ
 */
 var Mine = function(world, x, y) {
 	Mine.__super__.constructor.call(this, world, x, y);
-	this.radious = 5;
+	this.radious = 0.5;
+	this.__attractionForce = new b2d.b2Vec2();
 	this.__initPhysics(world, x, y);
 };
 
@@ -46,8 +47,50 @@ Mine.prototype.getPosition = function() {
 */
 Mine.prototype.draw = function(renderer) {
 	var p = this.getPosition();
-	this.drawPosition.set(p.y * Scale.toScreen, p.y * Scale.toScreen);
-	renderer.drawCircle(this.drawPosition, this.radious);
+	this.drawPosition.set(p.x * Scale.toScreen, p.y * Scale.toScreen);
+	renderer.drawCircle(this.drawPosition, this.radious, {'stroke_color': '#f00'});
+};
+
+/**
+ Makes the mine "think" (attracts it to the player when it is visible)
+*/
+Mine.prototype.think = function(player, walls) {
+	var input = new b2d.b2RayCastInput();
+	var output = new b2d.b2RayCastOutput();
+	input.p1 = this.getPosition();
+	input.p2 = player.getPosition();
+	input.maxFraction = 1;
+	
+	//Test if the player can be seen
+	var fixture = player.body.GetFixtureList();
+	//If the player cannot be seen, get out
+	if (!fixture.RayCast(output, input))
+		return;
+
+	var player_fraction = output.fraction, player_visible = true;
+	//check if any of the walls is closer than the player
+	for (var i = walls.length - 1; i >= 0; i--) {
+		fixture = walls[i].body.GetFixtureList();
+
+		if (!fixture.RayCast(output, input))
+			continue;
+
+		if (output.fraction < player_fraction) {
+			player_visible = false;
+			return;
+		}
+	}
+
+	//Player is visible
+	//Calculate the distance to the player
+	input.p2.Subtract(input.p1);
+	var direction = input.p2;
+	var distance = input.p2.Length();
+	var factor = -distance + 10;
+	factor = factor > 0? factor: 0;
+	//Attract the mine to the player.
+	this.__attractionForce.Set(direction.x * factor, direction.y * factor);
+	this.body.ApplyForce(this.__attractionForce, this.body.GetWorldCenter());
 };
 
 /**
@@ -60,10 +103,9 @@ Mine.drawInstances = function(renderer, mines) {
 	//This method is faster than calling once per mine, function calls are pretty expensive on js.
 	for (var i = mines.length - 1; i >= 0; i--) {
 		mine = mines[i];
-		console.log(mine)
 		p = mine.getPosition();
-		mine.drawPosition.set(p.y * Scale.toScreen, p.y * Scale.toScreen);
-		renderer.drawCircle(mine.drawPosition, mine.radious);
+		mine.drawPosition.set(p.x * Scale.toScreen, p.y * Scale.toScreen);
+		renderer.drawCircle(mine.drawPosition, mine.radious * Scale.toScreen, {'stroke_color': '#f00'});
 	}
 };
 
