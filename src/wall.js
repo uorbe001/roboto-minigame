@@ -54,7 +54,7 @@ Wall.prototype.getPosition = function() {
 Wall.prototype.draw = function(renderer) {
 	var p = this.getPosition();
 	this.drawPosition.set(p.x * Scale.toScreen, p.y * Scale.toScreen);
-	renderer.drawSquare(this.drawPosition, this.width * Scale.toScreen, this.height * Scale.toScreen, {'fill_color': '#0f0'});
+	renderer.drawSquare(this.drawPosition, this.width * Scale.toScreen, this.height * Scale.toScreen, {'stroke_color': '#0f0', 'fill_color': '#254117'});
 };
 
 /**
@@ -69,7 +69,7 @@ Wall.drawInstances = function(renderer, walls) {
 		wall = walls[i];
 		p = wall.getPosition();
 		wall.drawPosition.set(p.x * Scale.toScreen, p.y * Scale.toScreen);
-		renderer.drawSquare(wall.drawPosition, wall.width * Scale.toScreen, wall.height * Scale.toScreen, {'fill_color': '#0f0'});
+		renderer.drawSquare(wall.drawPosition, wall.width * Scale.toScreen, wall.height * Scale.toScreen, {'stroke_color': '#0f0', 'fill_color': '#254117'});
 	}
 };
 

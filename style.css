@@ -1,0 +1,10 @@
+#intro {
+	width: 860px;
+	height: 480px;
+	background: black;
+	color: white;
+}
+
+#cnv {
+	display: none;
+}

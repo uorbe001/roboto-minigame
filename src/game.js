@@ -1,9 +1,20 @@
 var Renderer = require("./renderer"), Level = require('./level'), Scale = require('./scale'), Types = require('./types');
 
 var Game = (function() {
-	var window = this, doc = window.document, canvas, context, renderer, level;
+	var window = this, doc = window.document, canvas, context, renderer, level, game_cleared;
+
+	function intro() {
+		setTimeout(function() {
+			var intro = doc.getElementById('intro');
+			canvas = doc.getElementById('cnv');
+			intro.style.display = 'none';
+			canvas.style.display = 'block';
+			init();
+		}, 3000);
+	}
 
 	function init() {
+		game_cleared = false;
 		canvas = doc.getElementById('cnv');
 		renderer = new Renderer(canvas);
 
@@ -21,25 +32,32 @@ var Game = (function() {
 			'canvas_height': canvas.height,
 			'callbacks': {
 				'begin_contact': function(a, b) {
-					var id;
+					var id, mine, distance = 10;
+
+					function callback() {
+						//"this" is the mine itself thanks to Function#call.
+						level.removeEntity(this.body.GetUserData());
+					}
+
 					//check the type of the first body
 					if (Math.floor(a / 100) == Types.Mine) {
-						id = a % 100;
-						console.log("explode! id:", id);
-
-						//if (Math.floor(b / 100) == Types.Player)
-						//	console.log("Hit! (superscared)");
+						mine = level.findEntityById(a);
+						mine.explode(callback);
+						level.player.heardExplosion(distance);
 					}
+
 					//check the type of the second body
 					if (Math.floor(b / 100) == Types.Mine) {
-						id = a % 100;
-						console.log("explode! id:", id);
-
-						//if (Math.floor(a / 100) == Types.Player)
-						//	console.log("Hit! (superscared)");
+						mine = level.findEntityById(b);
+						mine.explode(callback);
+						level.player.heardExplosion(distance);
 					}
-				}/*,
-				'end_contact': function(a, b) {}*/
+				},
+				'on_game_cleared': function() {
+					game_cleared = true;
+					console.log("Game cleared", this);
+				}
+				/*'end_contact': function(a, b) {}*/
 			}
 		});
 
@@ -75,12 +93,12 @@ var Game = (function() {
 	}
 
 	function update(timestamp) {
-		requestAnimationFrame(update);
+		if (!game_cleared) requestAnimationFrame(update);
 		level.updateAI();
 		level.updatePhysics();
 		renderer.clear();
 		level.draw(renderer);
 	}
 
-	window.onload = init;
+	window.onload = intro;
 })();

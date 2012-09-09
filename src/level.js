@@ -31,7 +31,10 @@ function Level(config) {
 
 	this.__setScreenBoundaries();
 
-	if (config && config.callbacks) this.__setContactListener(config.callbacks);
+	if (config && config.callbacks) {
+		this.__setContactListener(config.callbacks);
+		this.onGameCleared = config.callbacks.on_game_cleared;
+	}
 }
 
 Level.prototype.__createBoundary = function(x, y, w, h) {
@@ -99,6 +102,13 @@ Level.prototype.updatePhysics = function() {
 };
 
 Level.prototype.updateAI = function() {
+	//Check for cleared game
+	if (this.mines.length === 0) {
+		//Cleared!
+		this.onGameCleared.call(this);
+		return;
+	}
+
 	for (var i = this.mines.length - 1; i >= 0; i--) {
 		this.mines[i].think(this.player, this.walls);
 	}
@@ -110,8 +120,42 @@ Level.prototype.draw = function(renderer) {
 	Wall.drawInstances(renderer, this.walls);
 };
 
-/*Level.prototype.removeEntity = function(id) {
-    this.physics_world.DestroyBody(body]);
-};*/
+Level.prototype.findEntityById = function(id) {
+	var indx;
+
+	switch (Math.floor(id / 100)) {
+		case Types.Mine:
+			indx = id % 100;
+			return this.mines[indx];
+		case Types.Wall:
+			indx = id % 100;
+			return this.walls[indx];
+		default:
+			break;
+	}
+
+	return null;
+};
+
+Level.prototype.removeEntity = function(id) {
+	var indx, body, entity, collection;
+
+	switch (Math.floor(id / 100)) {
+		case Types.Mine:
+			collection = this.mines;
+			break;
+		case Types.Wall:
+			collection = this.walls;
+			break;
+		default:
+			return  null;
+	}
+
+	indx = id % 100;
+	entity = collection[indx];
+	body = entity.body;
+    this.physics_world.DestroyBody(body);
+    collection.splice(indx, 1);
+};
 
 module.exports = Level;

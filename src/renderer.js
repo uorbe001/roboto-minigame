@@ -56,9 +56,16 @@ Renderer.prototype.drawCircle = function(position, radious, opts) {
  @param height The square's height.
  @param opts Render options (overriding the defaults).
 */
-Renderer.prototype.drawSquare = function( position, width, height, opts) {
+Renderer.prototype.drawSquare = function(position, width, height, opts) {
 	this.__bindProperties(opts);
-	this.context.fillRect(position.x - width/2, position.y - height/2, width, height);
+	this.context.beginPath();
+	this.context.moveTo(position.x - width/2, position.y - height/2);
+	this.context.lineTo(position.x + width/2, position.y - height/2);
+	this.context.lineTo(position.x + width/2, position.y + height/2);
+	this.context.lineTo(position.x - width/2, position.y + height/2);
+	this.context.lineTo(position.x - width/2, position.y - height/2);
+	this.context.fill();
+	this.context.stroke();
 };
 
 module.exports = Renderer;
