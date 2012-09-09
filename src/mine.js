@@ -72,6 +72,10 @@ Mine.prototype.explode = function(callback) {
 
 /**
  Makes the mine "think" (attracts it to the player when it is visible)
+ 
+ I don't really like doing it this way, but being unfamiliar with box2d I haven't
+ had time to figure out how to make the force generators available in box2d to do what
+ I wanted.
 */
 Mine.prototype.think = function(player, walls) {
 	if (this.isExploding) {

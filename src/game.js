@@ -1,8 +1,10 @@
-var Renderer = require("./renderer"), Level = require('./level'), Scale = require('./scale'), Types = require('./types');
+var Renderer = require("./renderer"), Level = require('./level'), Scale = require('./scale'), Types = require('./types'), AudioManager = require('./audio_manager');
 
 var Game = (function() {
 	var window = this, doc = window.document, canvas, context, renderer, level, game_cleared, game_scores, stress;
-	var valuations = ['Excelent!', 'Well done!', 'Not bad!', 'He is kind of stressed...', 'Oh dear! He is scared to death!'];
+	var audio_manager = new AudioManager();
+	var valuations = ['Excellent!', 'Well done!', 'Not bad!', 'He is kind of stressed...', 'Oh dear! He is scared to death!'];
+	var sounds = {'explosion': '/sounds/explosion.wav', 'background': '/sounds/background.wav'};
 
 	function intro() {
 		setTimeout(function() {
@@ -34,6 +36,19 @@ var Game = (function() {
 		game_cleared = false;
 		canvas = doc.getElementById('cnv');
 		renderer = new Renderer(canvas);
+		
+		//Load all the sounds in the sounds map.
+		for (var key in sounds) {
+			if (key == 'background') {
+				audio_manager.load(sounds[key], function(url) {
+					audio_manager.play(sounds.background, true);
+				});
+
+				continue;
+			}
+
+			audio_manager.load(sounds[key]);
+		}
 
 		level = new Level({
 			'player': { 'position': {'x': 5, 'y': 5} },
@@ -62,6 +77,7 @@ var Game = (function() {
 						mine.explode(callback);
 						distance = level.player.distanceToEntity(mine);
 						level.player.heardExplosion(distance);
+						audio_manager.play(sounds.explosion);
 					}
 
 					//check the type of the second body
@@ -70,6 +86,7 @@ var Game = (function() {
 						mine.explode(callback);
 						distance = level.player.distanceToEntity(mine);
 						level.player.heardExplosion(distance);
+						audio_manager.play(sounds.explosion);
 					}
 				},
 
@@ -91,7 +108,7 @@ var Game = (function() {
 
 	function initListeners() {
 		doc.addEventListener('keydown', function(e) {
-			switch(event.keyCode) {
+			switch(e.keyCode) {
 				case 37: //left
 					level.player.setLinearVelocity(-20, 0);
 					break;
