@@ -7,7 +7,7 @@ var Game = (function() {
 	var sounds = {'explosion': '/sounds/explosion.wav', 'background': '/sounds/background.wav'};
 
 	function intro() {
-		setTimeout(function() {
+		//setTimeout(function() {
 			var intro = doc.getElementById('intro');
 			canvas = doc.getElementById('cnv');
 			game_scores = doc.getElementById('game-scores');
@@ -16,7 +16,7 @@ var Game = (function() {
 			game_scores.style.display = 'block';
 			stress = doc.querySelector('#game-scores .stress-bar > .value');
 			init();
-		}, 3000);
+		//}, 3000);
 	}
 
 	function cleared() {
@@ -53,12 +53,48 @@ var Game = (function() {
 		level = new Level({
 			'player': { 'position': {'x': 5, 'y': 5} },
 			'mines': [
-				{ 'position': {'x': 25, 'y': 25} },
-				{ 'position': {'x': 45, 'y': 45} }
+				{ 'position': {'x': 8, 'y': 38} },
+				{ 'position': {'x': 24, 'y': 45} },
+				{ 'position': {'x': 68, 'y': 32} },
+				{ 'position': {'x': 36, 'y': 5} },
+				{ 'position': {'x': 67, 'y': 15} },
+				{ 'position': {'x': 44, 'y': 45} },
+				{ 'position': {'x': 10, 'y': 25} },
+				{ 'position': {'x': 57, 'y': 28} },
+				{ 'position': {'x': 28, 'y': 42} }
 			],
 			'walls': [
-				{ 'position': {'x': 15, 'y': canvas.height/2 * Scale.toWorld}, 'width': 5, 'height': canvas.height/2 * Scale.toWorld },
-				{ 'position': {'x': 35, 'y': canvas.height/2 * Scale.toWorld}, 'width': 5, 'height': canvas.height/2 * Scale.toWorld }
+				{ 'position': {'x': 7, 'y': 5}, 'width': 1, 'height': 5 },
+				{ 'position': {'x': 5, 'y': 10}, 'width': 10, 'height': 1 },
+				{ 'position': {'x': 15, 'y': 7}, 'width': 1, 'height': 10 },
+				{ 'position': {'x': 10, 'y': 15}, 'width': 5, 'height': 1 },
+				{ 'position': {'x': 40, 'y': 10}, 'width': 15, 'height': 1 },
+				{ 'position': {'x': 30, 'y': 20}, 'width': 10, 'height': 1 },
+				{ 'position': {'x': 20, 'y': 5}, 'width': 7, 'height': 1 },
+				{ 'position': {'x': 50, 'y': 5}, 'width': 6, 'height': 1 },
+				{ 'position': {'x': 20, 'y': 15}, 'width': 10, 'height': 1 },
+				{ 'position': {'x': 15, 'y': 35}, 'width': 25, 'height': 1 },
+				{ 'position': {'x': 40, 'y': 35}, 'width': 10, 'height': 1 },
+				{ 'position': {'x': 70, 'y': 45}, 'width': 5, 'height': 1 },
+				{ 'position': {'x': 20, 'y': 25}, 'width': 3, 'height': 1 },
+				{ 'position': {'x': 80, 'y': 15}, 'width': 12, 'height': 1 },
+				{ 'position': {'x': 60, 'y': 25}, 'width': 8, 'height': 1 },
+				{ 'position': {'x': 70, 'y': 45}, 'width': 5, 'height': 1 },
+				{ 'position': {'x': 35, 'y': 25}, 'width': 3, 'height': 1 },
+				{ 'position': {'x': 65, 'y': 15}, 'width': 1, 'height': 10 },
+				{ 'position': {'x': 55, 'y': 25}, 'width': 1, 'height': 5 },
+				{ 'position': {'x': 40, 'y': 25}, 'width': 1, 'height': 9 },
+				{ 'position': {'x': 15, 'y': 25}, 'width': 1, 'height': 6 },
+				{ 'position': {'x': 45, 'y': 5}, 'width': 1, 'height': 10 },
+				{ 'position': {'x': 45, 'y': 25}, 'width': 1, 'height': 5 },
+				{ 'position': {'x': 59, 'y': 15}, 'width': 1, 'height': 7 },
+				{ 'position': {'x': 5, 'y': 45}, 'width': 1, 'height': 10 },
+				{ 'position': {'x': 40, 'y': 25}, 'width': 1, 'height': 9 },
+				{ 'position': {'x': 55, 'y': 25}, 'width': 1, 'height': 6 },
+				{ 'position': {'x': 65, 'y': 37}, 'width': 1, 'height': 10 },
+				{ 'position': {'x': 35, 'y': 47}, 'width': 1, 'height': 6 },
+				{ 'position': {'x': 49, 'y': 32}, 'width': 1, 'height': 7 },
+				{ 'position': {'x': 47, 'y': 45}, 'width': 1, 'height': 8 },
 			],
 			'canvas_width': canvas.width,
 			'canvas_height': canvas.height,
@@ -74,6 +110,7 @@ var Game = (function() {
 					//check the type of the first body
 					if (Math.floor(a / 100) == Types.Mine) {
 						mine = level.findEntityById(a);
+						if (mine.isExploding) return;
 						mine.explode(callback);
 						distance = level.player.distanceToEntity(mine);
 						level.player.heardExplosion(distance);
@@ -83,6 +120,7 @@ var Game = (function() {
 					//check the type of the second body
 					if (Math.floor(b / 100) == Types.Mine) {
 						mine = level.findEntityById(b);
+						if (mine.isExploding) return;
 						mine.explode(callback);
 						distance = level.player.distanceToEntity(mine);
 						level.player.heardExplosion(distance);
@@ -110,16 +148,16 @@ var Game = (function() {
 		doc.addEventListener('keydown', function(e) {
 			switch(e.keyCode) {
 				case 37: //left
-					level.player.setLinearVelocity(-20, 0);
+					level.player.setLinearVelocity(-30, 0);
 					break;
 				case 38: //up
-					level.player.setLinearVelocity(0, -20);
+					level.player.setLinearVelocity(0, -30);
 					break;
 				case 39: //right
-					level.player.setLinearVelocity(20, 0);
+					level.player.setLinearVelocity(30, 0);
 					break;
 				case 40: //down
-					level.player.setLinearVelocity(0, 20);
+					level.player.setLinearVelocity(0, 30);
 					break;
 			}
 		});

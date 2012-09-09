@@ -59,7 +59,7 @@ Player.prototype.stop = function() {
 };
 
 Player.prototype.heardExplosion = function(distance) {
-	this.stress += Math.floor(100 / distance);
+	this.stress += Math.floor(30 / distance);
 };
 
 Player.prototype.distanceToEntity = function(entity) {

@@ -123,24 +123,27 @@ Level.prototype.draw = function(renderer) {
 };
 
 Level.prototype.findEntityById = function(id) {
-	var indx;
-
 	switch (Math.floor(id / 100)) {
 		case Types.Mine:
-			indx = id % 100;
-			return this.mines[indx];
+			collection = this.mines;
+			break;
 		case Types.Wall:
-			indx = id % 100;
-			return this.walls[indx];
+			collection = this.walls;
+			break;
 		default:
 			break;
+	}
+
+	for (var i = collection.length - 1; i >= 0; i--) {
+		if (collection[i].body.GetUserData() == id)
+			return collection[i];
 	}
 
 	return null;
 };
 
 Level.prototype.removeEntity = function(id) {
-	var indx, body, entity, collection;
+	var body, entity, collection;
 
 	switch (Math.floor(id / 100)) {
 		case Types.Mine:
@@ -153,11 +156,17 @@ Level.prototype.removeEntity = function(id) {
 			return  null;
 	}
 
-	indx = id % 100;
-	entity = collection[indx];
+
+	for (var i = collection.length - 1; i >= 0; i--) {
+		if (collection[i].body.GetUserData() == id) {
+			entity = collection[i];
+			break;
+		}
+	}
+
 	body = entity.body;
     this.physics_world.DestroyBody(body);
-    collection.splice(indx, 1);
+    collection.splice(i, 1);
 };
 
 module.exports = Level;

@@ -72,7 +72,7 @@ Mine.prototype.explode = function(callback) {
 
 /**
  Makes the mine "think" (attracts it to the player when it is visible)
- 
+
  I don't really like doing it this way, but being unfamiliar with box2d I haven't
  had time to figure out how to make the force generators available in box2d to do what
  I wanted.
@@ -118,7 +118,7 @@ Mine.prototype.think = function(player, walls) {
 	input.p2.Subtract(input.p1);
 	var direction = input.p2;
 	var distance = input.p2.Length();
-	distance = distance < 10? distance: 0;
+	distance = distance < 15? distance: 0;
 	var factor = distance !== 0? 100/distance: 0;
 	//Attract the mine to the player.
 	this.__attractionForce.Set(direction.x * factor, direction.y * factor);
