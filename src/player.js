@@ -59,7 +59,14 @@ Player.prototype.stop = function() {
 };
 
 Player.prototype.heardExplosion = function(distance) {
-	this.stress += 100 / distance;
+	this.stress += Math.floor(100 / distance);
+};
+
+Player.prototype.distanceToEntity = function(entity) {
+	var p = this.body.GetPosition();
+	var p_entity = entity.body.GetPosition();
+	p.Subtract(p_entity);
+	return p.Length();
 };
 
 /**

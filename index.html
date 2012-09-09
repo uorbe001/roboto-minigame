@@ -5,15 +5,25 @@
 		<link rel="stylesheet" type="text/css" href="style.css" />
 	</head>
 	<body>
+		<div id="game">
+			<div id="intro" class="menu">
+				<p>This is <span class="robot-mention">Roboto</span>. He is a minebot.</p>
+				<p>He is made of magnets, so he attracts <span class="mine-mention">mines</span> and makes them explode.</p>
+				<p>But... he is afraid of explosions.</p>
+				<p class='objective'>Help him clear up the mines without making him too anxious!</p>
+			</div>
 
-	<div id="intro">
-		<p>This is roboto. He is a minebot.</p>
-		<p>He is made of magnets, so he attracts mines and makes them explode.</p>
-		<p>But... he is afraid of explosions.</p>
-		<p>Help him clear up the mines without making him too anxious!</p>
-	</div>
-	<canvas width="860" height="480" id="cnv">
+			<div id="game-scores">
+				Stress Level: <span class="stress-bar"><span class="value"></span></span>
+			</div>
+			<canvas width="860" height="480" id="cnv"></canvas>
 
-	</canvas>
+			<div id="scores" class="menu">
+				<p>Roboto's stress level is:</p>
+				<p class='score'>XXX</p>
+				<p class='valuation'>Well done!/Not bad!/He is way too scared!</p>
+				<p><a class='try-again'>Try Again!</a> </p>
+			</div>
+		</div>
 	</body>
 </html>

@@ -1,16 +1,33 @@
 var Renderer = require("./renderer"), Level = require('./level'), Scale = require('./scale'), Types = require('./types');
 
 var Game = (function() {
-	var window = this, doc = window.document, canvas, context, renderer, level, game_cleared;
+	var window = this, doc = window.document, canvas, context, renderer, level, game_cleared, game_scores, stress;
+	var valuations = ['Excelent!', 'Well done!', 'Not bad!', 'He is kind of stressed...', 'Oh dear! He is scared to death!'];
 
 	function intro() {
 		setTimeout(function() {
 			var intro = doc.getElementById('intro');
 			canvas = doc.getElementById('cnv');
+			game_scores = doc.getElementById('game-scores');
 			intro.style.display = 'none';
 			canvas.style.display = 'block';
+			game_scores.style.display = 'block';
+			stress = doc.querySelector('#game-scores .stress-bar > .value');
 			init();
 		}, 3000);
+	}
+
+	function cleared() {
+		canvas.style.display = 'none';
+		game_scores.style.display = 'none';
+		var scores = doc.getElementById('scores');
+		var score = doc.querySelector("#scores .score");
+		score.innerHTML = level.player.stress;
+		var valuation = doc.querySelector("#scores .valuation");
+		var vindx = Math.floor(level.player.stress / 10);
+		vindx = vindx > 4? 4: vindx;
+		valuation.innerHTML = valuations[vindx];
+		scores.style.display = 'block';
 	}
 
 	function init() {
@@ -32,7 +49,7 @@ var Game = (function() {
 			'canvas_height': canvas.height,
 			'callbacks': {
 				'begin_contact': function(a, b) {
-					var id, mine, distance = 10;
+					var id, mine, distance;
 
 					function callback() {
 						//"this" is the mine itself thanks to Function#call.
@@ -43,6 +60,7 @@ var Game = (function() {
 					if (Math.floor(a / 100) == Types.Mine) {
 						mine = level.findEntityById(a);
 						mine.explode(callback);
+						distance = level.player.distanceToEntity(mine);
 						level.player.heardExplosion(distance);
 					}
 
@@ -50,12 +68,14 @@ var Game = (function() {
 					if (Math.floor(b / 100) == Types.Mine) {
 						mine = level.findEntityById(b);
 						mine.explode(callback);
+						distance = level.player.distanceToEntity(mine);
 						level.player.heardExplosion(distance);
 					}
 				},
+
 				'on_game_cleared': function() {
 					game_cleared = true;
-					console.log("Game cleared", this);
+					cleared();
 				}
 				/*'end_contact': function(a, b) {}*/
 			}
@@ -90,6 +110,14 @@ var Game = (function() {
 		doc.addEventListener('keyup', function(e) {
 			level.player.setLinearVelocity(0, 0);
 		});
+
+		var try_again_link = doc.querySelector('#scores a.try-again');
+		try_again_link.addEventListener('click', function(e) {
+			scores.style.display= 'none';
+			canvas.style.display = 'block';
+			game_scores.style.display = 'block';
+			init();
+		});
 	}
 
 	function update(timestamp) {
@@ -98,6 +126,8 @@ var Game = (function() {
 		level.updatePhysics();
 		renderer.clear();
 		level.draw(renderer);
+		var st = level.player.stress < 50? level.player.stress: 50;
+		stress.style.width = st * 9 + 'px';
 	}
 
 	window.onload = intro;

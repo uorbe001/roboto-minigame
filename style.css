@@ -1,9 +1,130 @@
-#intro {
+body {
+	background: #2f2f2f;
+}
+
+#game > div {
+	margin: 0;
+}
+
+#game {
 	width: 860px;
-	height: 480px;
+	height: 460px;
+	border: 1px solid grey;
+	margin: 50px auto auto auto;
+}
+
+.menu {
+	width: 100%;
+	height: 100%;
 	background: black;
 	color: white;
+	display: none;
+	font-family: Helvetica, sans-serif;
+	font-size: 16px;
 }
+
+#intro {
+	display: block;
+}
+
+.menu p {
+	margin: 50px;
+	text-align: center;
+}
+
+.menu p:first-child {
+	margin-top: 0;
+	padding-top: 50px;
+}
+
+#intro .robot-mention:after {
+	width: 18px;
+	height: 20px;
+	background: url('imgs/robot.png');
+	display: inline-block;
+	content: '';
+	top: 5px;
+	margin-right: 5px;
+	margin-left: 5px;
+	position: relative;
+}
+
+#intro .mine-mention:after {
+	width: 18px;
+	height: 20px;
+	background: url('imgs/mine.png');
+	display: inline-block;
+	content: '';
+	top: 5px;
+	margin-right: 5px;
+	margin-left: 5px;
+	position: relative;
+}
+
+#intro .objective {
+	font-size: 24px;
+	color: red;
+	margin-top: 120px;
+}
+
+#scores p:first-child {
+	padding-top: 110px;
+}
+
+#scores .score {
+	font-size: 26px;
+	color: red;
+	margin-top: 60px;
+}
+
+#scores .valuation {
+	color: rgb(0, 255, 0);
+}
+
+#scores a {
+	color: rgb(80, 80, 200);
+	text-decoration: none;
+	text-align: center;
+}
+
+#scores a:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+#game-scores {
+	width: 860px;
+	height: 30px;
+	position: fixed;
+	top: 60px;
+	z-index: 999;
+	color: white;
+	font-family: Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	padding-left: 140px;
+	display: none;
+}
+
+#game-scores .stress-bar {
+	display: inline-block;
+	width: 450px;
+	height: 9px;
+	border: 1px solid white;
+	margin-left: 10px;
+	overflow: hidden;
+}
+
+#game-scores .stress-bar > .value {
+	display: inline-block;
+	position: fixed;
+	z-index: 9999;
+	width: 0px;
+	height: 9px;
+	background: red;
+	content: ' ';
+}
+
 
 #cnv {
 	display: none;

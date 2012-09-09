@@ -28,7 +28,7 @@ Mine.prototype.__initPhysics = function(world, x, y) {
 	var fixtureDef = new b2d.b2FixtureDef();
 	fixtureDef.density = 1.0;
 	fixtureDef.friction = 0.5;
-	fixtureDef.restitution = 0.2;
+	fixtureDef.restitution = 0;
 
 	var bodyDef = new b2d.b2BodyDef();
 	bodyDef.type = b2d.b2Body.b2_dynamicBody;
@@ -114,8 +114,8 @@ Mine.prototype.think = function(player, walls) {
 	input.p2.Subtract(input.p1);
 	var direction = input.p2;
 	var distance = input.p2.Length();
-	var factor = -distance + 15;
-	factor = factor > 0? factor: 0;
+	distance = distance < 10? distance: 0;
+	var factor = distance !== 0? 100/distance: 0;
 	//Attract the mine to the player.
 	this.__attractionForce.Set(direction.x * factor, direction.y * factor);
 	this.body.ApplyForce(this.__attractionForce, this.body.GetWorldCenter());

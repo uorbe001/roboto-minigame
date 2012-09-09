@@ -13,6 +13,8 @@ function Level(config) {
 	
 	this.canvasHeight = config.canvas_height;
 	this.canvasWidth = config.canvas_width;
+	//Reset entity counts, just in case (we are reseting or something like that).
+	Mine.count = Wall.count = 0;
 
 	this.physics_world = new b2d.b2World(new b2d.b2Vec2(0, 0), true);
 	this.player = new Player(this.physics_world, config.player.position.x, config.player.position.y);
