@@ -7,7 +7,7 @@ var Game = (function() {
 	var sounds = {'explosion': '/sounds/explosion.wav', 'background': '/sounds/background.wav'};
 
 	function intro() {
-		//setTimeout(function() {
+		setTimeout(function() {
 			var intro = doc.getElementById('intro');
 			canvas = doc.getElementById('cnv');
 			game_scores = doc.getElementById('game-scores');
@@ -16,7 +16,7 @@ var Game = (function() {
 			game_scores.style.display = 'block';
 			stress = doc.querySelector('#game-scores .stress-bar > .value');
 			init();
-		//}, 3000);
+		}, 3000);
 	}
 
 	function cleared() {
