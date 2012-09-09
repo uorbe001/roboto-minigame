@@ -43,7 +43,7 @@ AudioManager.prototype.play = function(url, loop) {
 	//Early-out in case audio context is not available
 	if (!this.context) return;
 	//The buffer isn't ready
-	if (!this.audio_buffers[url]) { console.log("Not ready yet!"); return; }
+	if (!this.audio_buffers[url]) { console.log("Not ready yet!"); return; }
 
 	var source = this.context.createBufferSource();
 	source.buffer = this.audio_buffers[url];
